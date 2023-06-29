@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { DragDropContext } from "react-beautiful-dnd";
 import Column from "../components/Column";
 import Button from "../components/Button";
@@ -9,6 +9,13 @@ const TodoListPage = () => {
   console.log(tasks["task-1"]);
   const renderTasks = taskIds.map((id) => tasks[id]);
   console.log(renderTasks);
+
+  useEffect(() => {
+    const storedTodos = localStorage.getItem("todos");
+    if (Object.is(storedTodos, null)) {
+      localStorage.setItem("todo", "");
+    }
+  }, []);
 
   const onDragEnd = (res) => {
     const { destination, source, draggableId } = res;
@@ -63,6 +70,7 @@ const TodoListPage = () => {
           </div>
         </div>
         <Column id="todo" tasks={renderTasks} onDelete={handleDelete} onChange={handleChange} />
+
       </div>
     </DragDropContext>
   );
@@ -71,3 +79,5 @@ const TodoListPage = () => {
 export default TodoListPage;
 
 export const Head = () => <title>Todo List</title>;
+
+
