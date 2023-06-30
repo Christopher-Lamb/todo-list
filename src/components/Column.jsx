@@ -1,14 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Droppable } from "react-beautiful-dnd";
 import Task from "./Task";
 
-export default function Column({ id, tasks = [], onDelete = () => {}, onChange = () => {} }) {
+export default function Column({ id, tasks = [], onDelete = () => {}, onChange = () => {}, onCompleted = () => {} }) {
   return (
     <Droppable droppableId={id}>
       {(provided) => (
-        <div className="bg-zinc-600" ref={provided.innerRef} {...provided.droppableProps}>
+        <div ref={provided.innerRef} {...provided.droppableProps}>
           {tasks.map((task, i) => (
-            <Task key={task.id} index={i} {...task} onChange={onChange} onDelete={onDelete} />
+            <Task key={task.id} index={i} completed={task.completed} {...task} onChange={onChange} onDelete={onDelete} onCompleted={onCompleted} />
           ))}
           {provided.placeholder}
         </div>
