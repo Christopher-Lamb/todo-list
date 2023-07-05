@@ -6,7 +6,7 @@ export default function Column({ id, tasks = [], onDelete = () => {}, onChange =
   return (
     <Droppable droppableId={id}>
       {(provided) => (
-        <div ref={provided.innerRef} {...provided.droppableProps}>
+        <div ref={provided.innerRef} {...provided.droppableProps} data-testid={id}>
           {tasks.map((task, i) => (
             <Task key={task.id} index={i} completed={task.completed} {...task} onChange={onChange} onDelete={onDelete} onCompleted={onCompleted} />
           ))}

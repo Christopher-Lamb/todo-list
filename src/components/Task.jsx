@@ -45,7 +45,9 @@ export default function Task({ id, content, index, completed, onChange = () => {
       {(provided) => {
         return (
           <div
+            id={id}
             className="w-full h-full mt-3 rounded-sm"
+            data-testid="task"
             ref={(el) => {
               provided.innerRef(el);
               if (ref) {
@@ -56,7 +58,7 @@ export default function Task({ id, content, index, completed, onChange = () => {
             {...provided.dragHandleProps}
             style={getContainerStyle(darkMode, provided.draggableProps.style)}
           >
-            {completed && (
+            {completed && content !== "" && (
               <div className="relative">
                 <div
                   className="absolute bg-black h-2 translate-y-[16px] left-[-1rem]"
@@ -74,7 +76,7 @@ export default function Task({ id, content, index, completed, onChange = () => {
                 </p>
               )}
               <div className="flex items-center">
-                {!isEditing && (
+                {!isEditing && content !== "" && (
                   <a className="cursor-pointer mr-1 z-[1]" onClick={() => onCompleted(id, !completed)}>
                     <AiOutlineStrikethrough style={getSelectorStyle(darkMode, completed)} size={"1.3rem"} />
                   </a>

@@ -4,16 +4,24 @@ import Column from "../components/Column";
 import Button from "../components/Button";
 import DarkModeProvider, { useDarkMode } from "../context/DarkModeContext";
 
-const TodoListPage = () => {
-  const [tasks, setTasks] = useState({});
-  const [taskIds, setTaskIds] = useState([]);
+const TASKS = {
+  "task-1": { id: "task-1", content: "TASK-1", completed: false },
+  "task-2": { id: "task-2", content: "TASK-2", completed: false },
+  "task-3": { id: "task-3", content: "TASK-3", completed: false },
+};
+const TASKIDS = ["task-1", "task-2", "task-3"];
+
+const TodoListPage = ({ initalTasks = { ...TASKS }, initialTaskIds = [...TASKIDS] }) => {
+  const [tasks, setTasks] = useState({ ...initalTasks });
+  const [taskIds, setTaskIds] = useState([...initialTaskIds]);
   const [darkMode, setDarkMode] = useState(false);
   const renderTasks = taskIds.map((id) => tasks[id]);
 
   useEffect(() => {
     let storedTodos = localStorage.getItem("todos");
     if (Object.is(storedTodos, null)) {
-      storedTodos = { tasks: { demo: { id: "demo", content: " - Demo Task", completed: false } }, taskIds: ["demo"] };
+      // storedTodos = { tasks: { demo: { id: "demo", content: " - Demo Task", completed: false } }, taskIds: ["demo"] };
+      storedTodos = { tasks: { ...TASKS }, taskIds: [...TASKIDS] };
       localStorage.setItem("todos", JSON.stringify(storedTodos));
     } else {
       storedTodos = JSON.parse(storedTodos);
@@ -44,7 +52,8 @@ const TodoListPage = () => {
   };
 
   const handleAddTask = () => {
-    const newId = crypto.randomUUID();
+    const newId = (Date.now() + Math.random()).toString();
+
     setTasks((t) => ({ ...t, [newId]: { id: newId, content: "", completed: false } }));
     setTaskIds((ids) => [...ids, newId]);
   };
@@ -85,7 +94,7 @@ const TodoListPage = () => {
   };
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
+    <DragDropContext onDragEnd={onDragEnd} enableDefaultSensors={true}>
       <DarkModeProvider value={darkMode}>
         <div className="max-w-3xl mx-auto mt-32 px-8 lg:p-0">
           <div className="flex justify-between md:items-center my-4 gap-3 md:gap-0 flex-col sm:flex-row mb-5">
@@ -102,14 +111,21 @@ const TodoListPage = () => {
               </Button>
             </div>
           </div>
-          <Column id="todo" tasks={renderTasks} onDelete={handleDelete} onChange={handleChange} onCompleted={handleCompleted} />
+          <Column id="todo-col" tasks={renderTasks} onDelete={handleDelete} onChange={handleChange} onCompleted={handleCompleted} />
         </div>
+        {/* <div className="absolute hidden">
+          <p>You have lifted an item t</p>
+          <p>You have moved the item</p>
+          <p>You have dropped the item</p>
+        </div> */}
       </DarkModeProvider>
     </DragDropContext>
   );
 };
 
 export default TodoListPage;
+
+// export { onDragEnd };
 
 export const Head = () => <title>Todo List</title>;
 
@@ -126,7 +142,7 @@ const Header = ({ children }) => {
   const darkMode = useDarkMode();
 
   return (
-    <h1 className="text-4xl w-32 text-center" style={HeaderStyle(darkMode)}>
+    <h1 data-testid="todo-header" className="text-4xl w-32 text-center" style={HeaderStyle(darkMode)}>
       {children}
     </h1>
   );
